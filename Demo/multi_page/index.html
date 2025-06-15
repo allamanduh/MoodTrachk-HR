@@ -1,0 +1,963 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i,700,700i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900" rel="stylesheet">
+
+    <title>MoodTrack Employee - Dashboard</title> 
+
+    <link rel="shortcut icon" type="image/icon" href="../../assets/logo/favicon.png" /> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.linearicons.com/free/1.0.0/icon-font.min.css">
+    <link rel="stylesheet" href="../../assets/css/animate.css">
+    <link rel="stylesheet" href="../../assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f5f8;
+            color: #676a6d;
+        }
+        body.sidebar-open {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: #222e4f !important;
+            font-family: 'Poppins', sans-serif !important;
+            text-transform: none;
+        }
+        p {
+            color: #79829a !important;
+            font-family: 'Poppins', sans-serif !important;
+        }
+        a {
+            color: #838ca1 !important;
+            text-transform: none;
+        }
+        a:hover {
+            color: #55a8fd !important;
+        }
+        .section-padding {
+            padding: 20px; 
+        }
+        .section-title {
+            text-align: left;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #222e4f !important;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 250px; 
+            background-color: #5A827E; 
+            color: #f5f5f5; 
+            flex-shrink: 0; 
+            overflow-y: auto; 
+            height: 100%; 
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s ease, transform 0.3s ease; 
+            position: fixed;
+            top: 0;
+            left: 0; 
+            z-index: 10; 
+        }
+
+        .dashboard-layout.sidebar-closed .sidebar {
+            width: 80px;
+        }
+    
+        .dashboard-layout.sidebar-closed .sidebar .sidebar-logo span,
+        .dashboard-layout.sidebar-closed .sidebar-nav ul li a span {
+            opacity: 0; 
+            transition: opacity 0.1s ease; 
+            white-space: nowrap; 
+        }
+      
+        .dashboard-layout.sidebar-closed .sidebar .sidebar-logo img,
+        .dashboard-layout.sidebar-closed .sidebar-nav ul li a i {
+            margin-right: 0; 
+            justify-content: center; 
+        }
+        .dashboard-layout.sidebar-closed .sidebar-nav ul li a {
+            justify-content: center; 
+            padding: 15px 0; 
+        }
+        
+        .sidebar-logo {
+            height: 70px;
+            background: #5A827E; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FAFFCA;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+        .sidebar-logo img {
+            height: 35px; 
+            margin-right: 10px;
+            transition: margin-right 0.3s ease; 
+        }
+        .sidebar-logo span.logo-text-moodtrack {
+            color: #B9D4AA; 
+        }
+        .sidebar-logo span.logo-text-employee {
+            color: #EEEDEB; 
+        }
+
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav ul li a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #efeeea !important; 
+            font-weight: 400;
+            text-transform: none;
+            transition: all 0.3s ease-in-out;
+            position: relative;
+        }
+        .sidebar-nav ul li a:hover {
+            background-color: #84ae92 !important; 
+            color: #fff !important;
+        }
+        .sidebar-nav ul li.active a {
+            background-color: #5A827E !important;
+            color: #fff !important;
+        }
+        .sidebar-nav ul li a i { 
+            margin-right: 15px;
+            font-size: 1.1em;
+            color: #c0c8cf !important; 
+            transition: margin-right 0.3s ease;
+        }
+        .sidebar-nav ul li.active a i {
+            color: #FAFFCA !important; 
+        }
+
+        .main-content-area {
+            flex-grow: 1; 
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            height: 100%;
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+            z-index: 5; 
+            background-color: #f3f5f8; 
+            transform: translateX(0); 
+        }
+        .dashboard-layout.sidebar-closed .main-content-area {
+            margin-left: 80px; 
+            width: calc(100% - 80px); 
+        }
+
+        .topbar {
+            height: 70px;
+            background-color: #fff; 
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); 
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: flex-end; 
+            position: sticky;
+            top: 0;
+            z-index: 99; 
+            flex-shrink: 0; 
+        }
+        .topbar .search-bar { 
+            margin-right: auto; 
+            display: flex;
+            align-items: center;
+        }
+        .topbar .search-bar input {
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .topbar .topbar-icons {
+            display: flex;
+            align-items: center;
+        }
+        .topbar .topbar-icons a {
+            margin-left: 20px;
+            color: #838ca1 !important; 
+            font-size: 1.2em; 
+            transition: color 0.3s ease;
+        }
+        .topbar .topbar-icons a:hover {
+            color: #FAFFCA !important; 
+        }
+        .topbar .topbar-icons .profile-pic {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background-color: #eee; 
+            margin-left: 20px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em; 
+            color: #888;
+        }
+        .topbar .topbar-icons .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .topbar .hamburger-menu { 
+            display: none;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #555;
+            margin-right: 20px; 
+            z-index: 100; 
+        }
+        @media (max-width: 991px) {
+            .topbar .search-bar {
+                display: none;
+            }
+            .topbar .hamburger-menu {
+                display: block;
+            }
+        }
+
+        .dashboard-content {
+            padding: 20px;
+            flex-grow: 1; 
+            overflow-y: auto;
+        }
+        #about.section-padding,
+        #mood-graph.section-padding,
+        #hr-suggestions.section-padding { 
+            background-color: #f3f5f8;
+        }
+        .hero-section { 
+            background-image: url('../../assets/images/consule.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 200px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            z-index: 1;
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .hero-section::before {
+            background: rgba(0, 0, 0, 0.2); 
+        }
+        .hero-content h1 {
+            font-size: 2.2em !important; 
+            font-weight: 600;
+            color: #5A827E !important; 
+        }
+        .hero-section .btn {
+            padding: 10px 25px; 
+            font-size: 1em;
+        }
+        
+        .info-box {
+            background-color: #e6fff0; 
+            border-left: 5px solid #B9D4AA; 
+            padding: 20px; 
+            border-radius: 10px; 
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            font-family: 'Poppins', sans-serif;
+            color: #555;
+            min-height: 120px; 
+        }
+        .info-box h4 {
+            font-size: 1.2em !important;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #5A827E !important; 
+        }
+
+        .form-group label {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+            color: #444;
+        }
+        .form-control { 
+            border-radius: 8px; 
+            border: 1px solid #e0e0e0; 
+            padding: 10px 15px;
+            font-family: 'Poppins', sans-serif;
+            box-shadow: none; 
+            color: #333; 
+        }
+        .form-control::placeholder { 
+            color: #999;
+        }
+        .form-check-label {
+            font-family: 'Poppins', sans-serif;
+            color: #666;
+        }
+
+        .emoji-options {
+            display: flex;
+            justify-content: center; 
+            gap: 15px; 
+            margin-top: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; 
+        }
+        .emoji-option {
+            width: 70px; 
+            height: 70px;
+            border-radius: 12px; 
+            border: 2px solid #e0e0e0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            flex-shrink: 0; 
+            flex-basis: auto; 
+        }
+        .emoji-option:hover {
+            transform: translateY(-3px);
+            border-color: #5A827E; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .emoji-option.selected {
+            background-color: #e2f5ee; 
+            border-color: #5A827E; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-1px); 
+        }
+        .emoji-option span.emoji {
+            font-size: 2.5em; 
+        }
+        .emoji-option span.label {
+            font-size: 0.8em; 
+            color: #777;
+        }
+
+        .statistic-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px; 
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 20px; 
+            font-family: 'Poppins', sans-serif;
+            min-height: 120px;
+            display: flex; 
+            flex-direction: column;
+            justify-content: center;
+        }
+        .statistic-card h3 {
+            font-size: 2.2em !important; 
+            font-weight: 700;
+            color: #55a8fd !important; 
+            margin-bottom: 10px;
+        }
+        .statistic-card p {
+            font-size: 0.9em !important;
+            color: #79829a !important;
+        }
+        #hr-suggestions .info-box {
+            background-color: #e6fff0; 
+            border-left-color: #B9D4AA; 
+        }
+        #hr-suggestions .info-box h4 {
+            color: #B9D4AA; 
+        }
+
+        .chatbot-section {
+            background-color: #FAFFCA; 
+        }
+        .chatbot-section .chatbot-bubble {
+            background-color: #B9D4AA; 
+            border-radius: 50%;
+            font-size: 3em; 
+            color: #5A827E; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .custom-footer {
+            background-color: #eef2f5; 
+            padding: 15px 0; 
+            text-align: center;
+            font-family: 'Poppins', sans-serif;
+            color: #777;
+            font-size: 0.85em;
+            border-top: 1px solid #e0e0e0;
+            margin-top: auto; 
+            flex-shrink: 0; 
+        }
+        .custom-footer ul {
+            margin-bottom: 5px;
+        }
+        .custom-footer ul li {
+            margin: 0 10px;
+        }
+        .custom-footer ul li a {
+            color: #838ca1 !important; 
+        }
+        .custom-footer ul li a:hover {
+            color: #55a8fd !important; 
+        }
+        @media (max-width: 991px) { 
+            .sidebar {
+                position: fixed; 
+                left: 0; 
+                transform: translateX(-100%); 
+                transition: transform 0.3s ease;
+                z-index: 1001; 
+                top: 0;
+                height: 100vh;
+                width: 250px; 
+                box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3); 
+            }
+            .sidebar.active {
+                transform: translateX(0); 
+            }
+    
+            .main-content-area {
+                margin-left: 0; 
+                width: 100%; 
+                transition: margin-left 0.3s ease, transform 0.3s ease;
+            }
+            .dashboard-layout.sidebar-active .main-content-area {
+                transform: translateX(250px); 
+            }
+            .topbar .hamburger-menu {
+                display: block; 
+                margin-right: 0; 
+            }
+            .topbar .search-bar {
+                display: none; 
+            }
+            .topbar .topbar-icons {
+                margin-left: auto; 
+            }
+            .topbar .topbar-icons a {
+                margin-left: 15px; 
+            }
+            .hero-content h1 {
+                font-size: 1.8em !important;
+            }
+            .section-title {
+                font-size: 1.6em !important;
+            }
+            .statistic-item {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+            .dashboard-content { 
+                padding: 15px;
+            }
+            .emoji-options {
+                gap: 10px; 
+            }
+            .emoji-option {
+                width: 60px; 
+                height: 60px;
+                font-size: 0.9em; 
+            }
+            .emoji-option span.emoji {
+                font-size: 2em;
+            }
+            .emoji-option span.label {
+                font-size: 0.7em;
+            }
+        }
+ 
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+        body.sidebar-open { 
+            overflow: hidden; 
+        }
+
+      
+        @media (min-width: 992px) { 
+            .sidebar {
+                position: relative; 
+                transform: translateX(0); 
+                left: auto; 
+            }
+            .main-content-area {
+                margin-left: 250px; 
+                width: calc(100% - 250px); 
+            }
+            .dashboard-layout.sidebar-closed .main-content-area {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+            .topbar .hamburger-menu {
+                display: block; 
+            }
+            
+            .emoji-options {
+                flex-wrap: nowrap; 
+            }
+            .emoji-option {
+                width: 80px; 
+                height: 80px;
+                flex-basis: auto; 
+            }
+            .emoji-option span.emoji {
+                font-size: 3em; 
+            }
+            .emoji-option span.label {
+                font-size: 0.85em; 
+            }
+            
+            .dashboard-content .container {
+                max-width: none; 
+                width: 100%; 
+                padding-left: 20px; 
+                padding-right: 20px;
+            }
+            
+            .dashboard-content .row {
+                margin-left: -10px; 
+                margin-right: -10px;
+            }
+            .dashboard-content .row > [class*="col-"] {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-layout" id="dashboard-layout">
+
+        <aside class="sidebar" id="sidebar-menu">
+            <div class="sidebar-logo">
+                <img src="../../assets/logo/healthy-mind_11264372.png" alt="MoodTrack Logo">
+                Mood<span class="logo-text-moodtrack">Track</span><span class="logo-text-employee"> Employee</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="#hero-dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="#about"><i class="fas fa-info-circle"></i> About MoodTrack</a></li>
+                    <li><a href="#daily-input"><i class="fas fa-edit"></i> Your Feelings</a></li>
+                    <li><a href="#mood-graph"><i class="fas fa-chart-area"></i> Mood Trend</a></li>
+                    <li><a href="#performance-stats"><i class="fas fa-chart-line"></i> Performance Statistics</a></li>
+                    <li><a href="#hr-suggestions"><i class="fas fa-lightbulb"></i> Suggestions</a></li>
+                    <li><a href="#chatbot"><i class="fas fa-robot"></i> Chatbot</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content-area" id="main-content-area">
+            <header class="topbar">
+                <a href="#" class="hamburger-menu" id="hamburger-toggle">
+                    <i class="fas fa-bars"></i>
+                </a>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="topbar-icons">
+                    <a href="#"><i class="fas fa-bell"></i></a>
+                    <a href="#"><i class="fas fa-envelope"></i></a>
+                    <a href="#" class="profile-pic">
+                        <i class="fas fa-user-circle"></i> 
+                    </a>
+                </div>
+            </header>
+
+            <div class="dashboard-content">
+                <section class="hero-section" id="hero-dashboard">
+                    <div class="container hero-content">
+                        <h1>Welcome!</h1>
+                    </div>
+                </section>
+
+                <section id="about" class="section-padding"> 
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-7 col-sm-12">
+                                <h2 class="section-title text-left">About MoodTrack</h2>
+                                <p style="font-family: 'Poppins', sans-serif; color: #555; line-height: 1.8;">
+                                    MoodTrack helps detect employee burnout levels using AI technology and sentiment analysis.
+                                    We provide an intuitive platform to monitor mental well-being, offering
+                                    insights and support employees need. With MoodTrack, prioritizing employee well-being leads to optimal performance.
+                                </p>
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                <div class="info-box">
+                                    <h4>What is MoodTrack?</h4>
+                                    <p>MoodTrack HR is a revolutionary platform for detecting employee burnout, analyzing mood and behavior for better team mental health.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="daily-input" class="section-padding" style="background-color: #FAFFCA;"> 
+                    <div class="container text-center">
+                        <h2 class="section-title">How Are You Feeling Today?</h2>
+                        <div class="card-quabble"> 
+                            <div class="emoji-options">
+                                <div class="emoji-option" data-value="very-happy">
+                                    <span class="emoji">😄</span>
+                                    <span class="label">Happy</span>
+                                </div>
+                                <div class="emoji-option" data-value="happy">
+                                    <span class="emoji">😊</span>
+                                    <span class="label">Neutral</span>
+                                </div>
+                                <div class="emoji-option" data-value="neutral">
+                                    <span class="emoji">😐</span>
+                                    <span class="label">Bored</span>
+                                </div>
+                                <div class="emoji-option" data-value="sad">
+                                    <span class="emoji">😔</span>
+                                    <span class="label">Sad</span>
+                                </div>
+                                <div class="emoji-option" data-value="very-sad">
+                                    <span class="emoji">😭</span>
+                                    <span class="label">Stressed</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-4 mt-4">
+                                <label for="feedbackText">Or, want to tell us about it? (optional):</label>
+                                <textarea class="form-control" id="feedbackText" rows="3" placeholder="How was your day?"></textarea>
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-primary" id="submitMood">Submit Mood</button>
+                            </div>
+                        </div>
+                    </div> 
+                </section>
+
+                <section id="mood-graph" class="section-padding">
+                    <div class="container">
+                        <h2 class="section-title">Mood Trend</h2>
+                        <p class="text-center" style="font-family: 'Poppins', sans-serif; color: #666; margin-bottom: 40px;">
+                            See your mood patterns over time.
+                        </p>
+                        <div class="card-quabble" style="padding: 20px;"> 
+                            <canvas id="moodTrendChart"></canvas> </div>
+                    </div>
+                </section>
+
+                <section id="performance-stats" class="section-padding" style="background-color: #FAFFCA;"> 
+                    <div class="container">
+                        <h2 class="section-title">Performance Statistics</h2>
+                        <p class="text-center" style="font-family: 'Poppins', sans-serif; color: #666; margin-bottom: 40px;">
+                            Important metrics to understand your productivity and well-being.
+                        </p>
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="statistic-card"> 
+                                    <h3>15</h3>
+                                    <p>Total Entries</p> 
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-6">
+                                <div class="statistic-card"> 
+                                    <h3>7 Days</h3> 
+                                    <p>Positive Mood Streak</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-sm-12">
+                                <div class="statistic-card"> 
+                                    <h3>2x</h3>
+                                    <p>Counseling Requested</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="hr-suggestions" class="section-padding">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-7 col-sm-12">
+                                <h2 class="section-title text-left">Suggestions</h2>
+                                <p style="font-family: 'Poppins', sans-serif; color: #555; line-height: 1.8;">
+                                    This section displays suggestions or information that may be relevant to HR based on your mood data.
+                                    This information is anonymous and aggregated to protect your privacy.
+                                </p>
+                            </div>
+                            <div class="col-md-5 col-sm-12">
+                                <div class="info-box" style="border-left-color: #B9D4AA;"> 
+                                    <h4>How Your Data is Used?</h4>
+                                    <p>Your mood data helps HR understand overall team well-being trends without identifying individuals.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="chatbot" class="section-padding" style="background-color: #FAFFCA;"> 
+                    <div class="container text-center">
+                        <h2 class="section-title">Chatbot</h2>
+                        <div class="chatbot-bubble"><i class="fas fa-comments"></i></div> 
+                        <p style="font-family: 'Poppins', sans-serif; color: #555; margin-bottom: 30px;">
+                            Let's chat!
+                        </p>
+                        <button class="btn btn-primary">Start Chatbot</button>
+                    </div>
+                </section>
+
+                <footer class="custom-footer">
+                    <div class="container">
+                        <ul>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">Privacy</a></li>
+                            <li><a href="#">Terms and Conditions</a></li>
+                        </ul>
+                        <p>&copy; 2025 MoodTrack. All rights reserved.</p>
+                    </div>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <script src="../../assets/js/jquery.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+    <script type="text/javascript" src="../../assets/js/bootstrap.min.js"></script>
+    <script src="../../assets/js/jquery.hc-sticky.min.js" type="text/javascript"></script>
+    <script src="../../assets/js/jquery.magnific-popup.min.js"></script>
+    <script type="text/javascript" src="../../assets/js/owl.carousel.min.js"></script>
+    <script src="../../assets/js/jquery.counterup.min.js"></script>
+    <script src="../../assets/js/waypoints.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
+    <script type="text/javascript" src="../../assets/js/jak-menusearch.js"></script>
+    <script type="text/javascript" src="../../assets/js/custom.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            let selectedMood = ''; 
+
+            $('.emoji-option').on('click', function() {
+                $('.emoji-option').removeClass('selected');
+                $(this).addClass('selected');
+                selectedMood = $(this).data('value');
+                console.log('Mood selected:', selectedMood); 
+            });
+
+            $('#submitMood').on('click', function() {
+                const feedbackText = $('#feedbackText').val();
+
+                if (selectedMood) {
+                    alert('Your mood today (' + selectedMood + ') and message "' + feedbackText + '" have been submitted!');
+                } else {
+                    alert('Please select your mood first!');
+                }
+            });
+
+            const sidebar = $('#sidebar-menu');
+            const hamburger = $('#hamburger-toggle');
+            const overlay = $('#sidebar-overlay');
+            const dashboardLayout = $('#dashboard-layout'); 
+
+            function openSidebar() {
+                sidebar.addClass('active');
+                overlay.addClass('active');
+                dashboardLayout.addClass('sidebar-active');
+                $('body').addClass('sidebar-open');
+            }
+
+            function closeSidebar() {
+                sidebar.removeClass('active');
+                overlay.removeClass('active');
+                dashboardLayout.removeClass('sidebar-active');
+                $('body').removeClass('sidebar-open');
+            }
+
+            hamburger.on('click', function(e) {
+                e.preventDefault();
+                if (sidebar.hasClass('active')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            overlay.on('click', function() {
+                closeSidebar();
+            });
+
+            $('.sidebar-nav ul li a').on('click', function() {
+                if ($(window).width() <= 991) { 
+                    closeSidebar();
+                }
+            });
+
+            $('.sidebar-nav ul li a').on('click', function() {
+                $('.sidebar-nav ul li').removeClass('active');
+                $(this).parent().addClass('active');
+            });
+
+            $(window).on('resize', function() {
+                if ($(window).width() > 991) {
+                    closeSidebar();
+                } else {
+                    closeSidebar();
+                }
+            });
+            
+            if ($(window).width() > 991) {
+                dashboardLayout.removeClass('sidebar-closed');
+            } else {
+                dashboardLayout.removeClass('sidebar-closed');
+                closeSidebar();
+            }
+
+            const moodData = {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Mood Trend',
+                    data: [3, 4, 2, 5, 4, 3, 4],
+                    borderColor: '#5A827E',
+                    backgroundColor: 'rgba(90, 130, 126, 0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointBackgroundColor: '#5A827E',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 7,
+                }]
+            };
+
+            const moodConfig = {
+                type: 'line',
+                data: moodData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Weekly Mood Progress',
+                            font: {
+                                size: 16,
+                                family: 'Poppins'
+                            },
+                            color: '#222e4f'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    const moodValue = context.raw;
+                                    let moodText = '';
+                                    if (moodValue === 1) moodText = 'Stressed 😭';
+                                    else if (moodValue === 2) moodText = 'Sad 😔';
+                                    else if (moodValue === 3) moodText = 'Bored 😐';
+                                    else if (moodValue === 4) moodText = 'Neutral 😊';
+                                    else if (moodValue === 5) moodText = 'Happy 😄';
+                                    return label + moodText;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 1,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value, index, values) {
+                                    if (value === 1) return 'Stressed';
+                                    if (value === 2) return 'Sad';
+                                    if (value === 3) return 'Bored';
+                                    if (value === 4) return 'Neutral';
+                                    if (value === 5) return 'Happy';
+                                    return '';
+                                },
+                                font: {
+                                    family: 'Poppins'
+                                },
+                                color: '#79829a'
+                            },
+                            grid: {
+                                color: '#e0e0e0',
+                                borderColor: '#e0e0e0'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                font: {
+                                    family: 'Poppins'
+                                },
+                                color: '#79829a'
+                            },
+                            grid: {
+                                color: '#e0e0e0',
+                                borderColor: '#e0e0e0'
+                            }
+                        }
+                    }
+                }
+            };
+
+            const moodTrendChart = new Chart(
+                document.getElementById('moodTrendChart'),
+                moodConfig
+            );
+        });
+    </script>
+
+</body>
+
+</html>
